@@ -1,27 +1,33 @@
-# A simple test scene with a texture and floor
-
-eye
-  -7.10419 -0.050747 1.58999
-  0 0 0.4
-  0.165214 -0.00155897 0.986256
-  0.239309
+eye        
+  0 2 3
+  0 0.5 0
+  0 0.5 0
+  0.954249
 
 light
-  -1 0 1      # position
+  0 3 5      # position
   1 1 1       # colour
 
+light
+  10 10 10      # position
+  1 1 1       # colour
 
 material
-  floor       # name
-  0 0 0       # ambient reflectivity (Ka)
-  0.4 0.4 0.4 # diffuse reflectivity (Kd)
-  0 0 0       # specular reflectivity (Ks)
-  100         # shininess (n)
-  .990        # glossiness (g)
+  green       # name
+  .1 .1 .1    # ambient reflectivity (Ka)
+  .8 .8 .8       # diffuse reflectivity (Kd)
+  .1 .1 .1    # specular reflectivity (Ks)
+  200         # shininess (n)
+  1           # glossiness (g)
   0 0 0       # emission (Ie)
-  1.0         # opacity (alpha)
-  -           # texture filename (- means none)
+  1           # opacity (alpha)
+  data/brick.ppm   # texture filename (- means none)
   -           # bump map filename (- means none)
+
+sphere
+  1          # radius
+  2 0 0       # centre
+  green       # material name
 
 material
   glass       # name
@@ -37,39 +43,27 @@ material
 
 # stained glass window
 
-triangle
-  1 1 0 / 0 0
-  1 -1 0 / 1 0
-  1 1 1 / 0 1
-  glass
-
-triangle
-  1 -1 0 / 1 0
-  1 -1 1 / 1 1
-  1 1 1 / 0 1
-  glass
-
+sphere
+  1          # radius
+  -1 0 0       # centre
+  glass       # material name
 
 # glossy floor
 
-triangle
-  -10 -10 0 / 0 0
-  10 -10 0 / 1 0
-  -10 10 0 / 0 1
-  floor
+material
+  floor       # name
+  0 0 0       # ambient reflectivity (Ka)
+  0.4 0.4 0.4 # diffuse reflectivity (Kd)
+  0 0 0       # specular reflectivity (Ks)
+  100         # shininess (n)
+  .990        # glossiness (g)
+  0 0 0       # emission (Ie)
+  1.0         # opacity (alpha)
+  -           # texture filename (- means none)
+  -           # bump map filename (- means none)
 
-triangle
-  10 -10 0 / 1 0
-  10 10 0 / 1 1
-  -10 10 0 / 0 1
-  floor
+sphere
+  1          # radius
+  0 -1 0       # centre
+  floor       # material name
 
-light
-  20 60 20
-  0.7 0.7 0.7
-
-light
-  -20 60 -20
-  0.7 0.7 0.7
-
-wavefront triceratops1.obj
