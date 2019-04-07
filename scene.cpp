@@ -321,15 +321,30 @@ vec3 Scene::pixelColour( int x, int y )
 
   // YOUR CODE HERE
 
-  if(jitter){
+  vec3 totalColour = vec3(0, 0, 0);
+  for(int i = 0; i < numPixelSamples; i++){
+    for(int j = 0; j < numPixelSamples; j++){
+      float dx = 0;
+      float dy = 0;
+      if(jitter){
+        float xmax = (i + 1.0) / numPixelSamples;
+        float xmin = float(i) / numPixelSamples;
+        float ymax = (j + 1.0) / numPixelSamples;
+        float ymin = float(j) / numPixelSamples;
+        dx = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / xmax - xmin);
+        dy = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / ymax - ymin);
+      } else {
+        dx = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        dy = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      }
 
-  } else {
-
+      vec3 dir = (llCorner + (x+dx)*right + (y+dy)*up).normalize();
+      totalColour = totalColour + raytrace( eye->position, dir, 0, -1, -1 );
+    }
   }
 
-  vec3 dir = (llCorner + (x+0.5)*right + (y+0.5)*up).normalize();
+  return (1.0 / pow(numPixelSamples, 2)) * totalColour;
 
-  result = raytrace( eye->position, dir, 0, -1, -1 );
 
 #endif
 

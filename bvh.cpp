@@ -112,7 +112,7 @@ BVH_node * BVH::buildSubtree( seq<int> &triangleIndices, int depth )
 
   seq<int> *clusterTriangles;
 
-#if 1
+#if 0
 
   // Demonstration code, which assigns each triangle to a RANDOM cluster
   //
@@ -146,6 +146,42 @@ BVH_node * BVH::buildSubtree( seq<int> &triangleIndices, int depth )
   // well separated, unlike those of the demonstration code, above.
 
   // YOUR CODE HERE
+
+  clusterTriangles = new seq<int>[numSeeds];
+
+  for(int i = 0; i < NUM_CLUSTERING_ITERATIONS; i++){
+
+    clusterTriangles->clear();
+
+    for (int j=0; j<triangleIndices.size(); j++) { // all triangles
+      BBox triBox = triangleBBox( triangleIndices[j] );
+
+      float minDist = MAXFLOAT;
+      int cluster = 0;
+      for (int k=0; k<numSeeds; k++) {
+        float thisDist = boxBoxDistance( triBox, seedBoxes[k] );
+        if (thisDist < minDist){
+          minDist = thisDist;
+          cluster = k;
+        }
+      }
+      clusterTriangles[cluster].add( triangleIndices[j] );
+    }
+
+    for (int k=0; k<numSeeds; k++) {
+      if(clusterTriangles[k].size() > 0){
+        BBox newRep = triangleBBox( clusterTriangles[k][0] );
+        for (int j = 1; j < clusterTriangles[k].size(); j++){
+          BBox curr = triangleBBox( clusterTriangles[k][j] );
+          newRep.min = newRep.min + curr.min;
+          newRep.max = newRep.max + curr.max;
+        }
+        newRep.min = (1.0/clusterTriangles[k].size()) * newRep.min;
+        newRep.max = (1.0/clusterTriangles[k].size()) * newRep.max;
+        seedBoxes[k] = newRep;
+      }
+    }
+  }
 
 #endif
 
@@ -254,12 +290,35 @@ BBox BVH::trianglesBBox( seq<int> &triangleIndices )
 //
 // Box is [vmin,vmax].  Ray parameters are restricted to [tmin,tmax].
 // Return true iff ray intersects box (even if starting from the inside).
+void swap(float* x, float* y){
+  float temp = *x;
+  *x = *y;
+  *y = temp;
+}
+
 
 bool BVH::rayBoxInt( vec3 &rayStart, vec3 &rayDir, float tmin, float tmax, BBox &bbox )
 
 {
   // YOUR CODE HERE
-  
+  float txmin = (bbox.min.x - rayStart.x) / rayDir.x;
+  float txmax = (bbox.max.x - rayStart.x) / rayDir.x; 
+  if (txmin > txmax) swap(&txmin, &txmax);
+  if ((tmin > txmax) || (txmin > tmax)) 
+    return false; 
+
+  float tymin = (bbox.min.y - rayStart.y) / rayDir.y;
+  float tymax = (bbox.max.y - rayStart.y) / rayDir.y; 
+  if (tymin > tymax) swap(&tymin, &tymax);
+  if ((tmin > tymax) || (tymin > tmax)) 
+    return false; 
+
+  float tzmin = (bbox.min.z - rayStart.z) / rayDir.z; 
+  float tzmax = (bbox.max.z - rayStart.z) / rayDir.z;
+  if (tzmin > tzmax) swap(&tzmin, &tzmax);
+  if ((tmin > tzmax) || (tzmin > tmax)) 
+    return false; 
+
   return true;
 }
 
