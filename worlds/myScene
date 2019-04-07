@@ -1,0 +1,87 @@
+eye        
+  0 20 30
+  0 -20 0
+  0 1 0
+  0.954249
+
+light
+  0 20 30      # position
+  1 1 1       # colour
+
+light
+  0 10 10      # position
+  1 1 1       # colour
+
+wavefront triceratops1.obj
+
+material
+  floor       # name
+  0 0 0       # ambient reflectivity (Ka)
+  0.4 0.4 0.4 # diffuse reflectivity (Kd)
+  0 0 0       # specular reflectivity (Ks)
+  100         # shininess (n)
+  .990        # glossiness (g)
+  0 0 0       # emission (Ie)
+  1.0         # opacity (alpha)
+  -           # texture filename (- means none)
+  -           # bump map filename (- means none)
+
+material
+  green       # name
+  .1 .1 .1    # ambient reflectivity (Ka)
+  .8 .8 .8       # diffuse reflectivity (Kd)
+  .1 .1 .1    # specular reflectivity (Ks)
+  200         # shininess (n)
+  1           # glossiness (g)
+  0 0 0       # emission (Ie)
+  1           # opacity (alpha)
+  data/brick.ppm   # texture filename (- means none)
+  -           # bump map filename (- means none)
+
+material
+  glass       # name
+  0 0 0       # ambient reflectivity (Ka)
+  1 1 1       # diffuse reflectivity (Kd)
+  0 0 0       # specular reflectivity (Ks)
+  1           # shininess (n)
+  1           # glossiness (g)
+  0 0 0       # emission (Ie)
+  1           # opacity (alpha)
+  data/musicGlass.ppm  # texture filename (- means none)
+  -           # bump map filename (- means none)
+
+
+
+sphere
+  5           # radius
+  30 0 0       # centre
+  green       # material name
+
+# stained glass window
+
+triangle
+  20 20 0 / 0 0
+  20 -20 0 / 1 0
+  -20 20 0 / 0 1
+  glass
+
+triangle
+  20 -20 0 / 0 0
+  -20 -20 0 / 1 0
+  -20 20 0 / 0 1
+  glass
+
+# glossy floor
+
+triangle
+  -30 -20 -30 / 0 0
+  30 -20 -30 / 1 0
+  -30 -20 30 / 0 1
+  floor
+
+triangle
+  30 -20 -30 / 1 0
+  30 -20 30 / 1 1
+  -30 -20 30 / 0 1
+  floor
+
