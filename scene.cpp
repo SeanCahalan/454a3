@@ -202,6 +202,30 @@ vec3 Scene::raytrace( vec3 &rayStart, vec3 &rayDir, int depth, int thisObjIndex,
 
     // YOUR CODE HERE
 
+    float half_angle = acos(g);
+    float l = 1.0 / tan(half_angle);
+    vec3 reflected_colours = vec3(0, 0, 0);
+
+    for(int i = 0; i < glossyIterations; i++){
+      float a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      while(a*a + b*b > 1.0){
+        a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+      }
+      
+      vec3 p = P + l*R + a*R.perp1() + b*R.perp2();
+      vec3 dir = (1.0 / sqrt(
+        pow(p.x-P.x, 2) +
+        pow(p.y-P.y, 2) +
+        pow(p.z-P.z, 2)
+      )) * (p - P);
+
+      reflected_colours = reflected_colours + raytrace( P, dir, depth, objIndex, objPartIndex );
+    }
+
+    vec3 avg_reflected = (1.0 / glossyIterations) * reflected_colours;
+    Iout = Iout + calcIout( N, R, E, E, kd, mat->ks, mat->n, avg_reflected );
   }
   
   // Add direct contributions from lights
@@ -281,7 +305,7 @@ vec3 Scene::pixelColour( int x, int y )
 
   vec3 result;
 
-#if 1
+#if 0
 
   // DELETE THE FOLLOWING in your solution code. 
 
@@ -296,6 +320,16 @@ vec3 Scene::pixelColour( int x, int y )
   // false; use a jittered patter if 'jitter' is true.
 
   // YOUR CODE HERE
+
+  if(jitter){
+
+  } else {
+
+  }
+
+  vec3 dir = (llCorner + (x+0.5)*right + (y+0.5)*up).normalize();
+
+  result = raytrace( eye->position, dir, 0, -1, -1 );
 
 #endif
 
