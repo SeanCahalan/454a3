@@ -147,12 +147,13 @@ BVH_node * BVH::buildSubtree( seq<int> &triangleIndices, int depth )
 
   // YOUR CODE HERE
 
-  clusterTriangles = new seq<int>[numSeeds];
+	clusterTriangles = new seq<int>[numSeeds];
 
   for(int i = 0; i < NUM_CLUSTERING_ITERATIONS; i++){
 
     clusterTriangles->clear();
-
+    clusterTriangles = new seq<int>[numSeeds];
+    
     for (int j=0; j<triangleIndices.size(); j++) { // all triangles
       BBox triBox = triangleBBox( triangleIndices[j] );
 
@@ -169,7 +170,7 @@ BVH_node * BVH::buildSubtree( seq<int> &triangleIndices, int depth )
     }
 
     for (int k=0; k<numSeeds; k++) {
-      if(clusterTriangles[k].size() > 0){
+      if(k < clusterTriangles->size() && clusterTriangles[k].size() > 0){
         BBox newRep = triangleBBox( clusterTriangles[k][0] );
         for (int j = 1; j < clusterTriangles[k].size(); j++){
           BBox curr = triangleBBox( clusterTriangles[k][j] );
